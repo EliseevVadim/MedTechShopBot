@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
+use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
@@ -112,9 +113,18 @@ class TelegramBotHandler extends BaseBot
                     }
                 }
             }
-            if (!$fallbackFound)
-                $output = $this->reply("Произошла ошибка обработки запроса. Попробуйте еще.");
+            if (!$fallbackFound) {
+                try {
+                    ChatMessage::create([
+                        'chat_id' => $this->user->telegram_chat_id,
+                        'content' => $message->text
+                    ]);
+                    $this->reply("Ваше сообщение будет обработано модераторами.");
+                }
+                catch (\Exception $exception) {
+                    $this->reply($exception->getMessage());
+                }
+            }
         }
-        return response()->json($output);
     }
 }

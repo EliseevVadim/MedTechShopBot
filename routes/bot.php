@@ -42,6 +42,9 @@ ShopServiceFacade::bot()->addRoute("/Только для модераторов"
         ],
         [
             ["text" => "Удалить категорию товаров", "callback_data" => "/startCategoryRemoving"]
+        ],
+        [
+            ["text" => "Просмотр пользовательских сообщений", "url" => "http://127.0.0.1:8000/checkMessages"]
         ]
     ]);
 });

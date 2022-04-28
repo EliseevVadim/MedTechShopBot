@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\ShopServiceFacade;
+use App\Models\ChatMessage;
 use App\Models\Device;
 use App\Models\DeviceType;
 use Illuminate\Http\Request;
@@ -51,5 +52,32 @@ class ModerationController extends Controller
         $deviceType->save();
         ShopServiceFacade::bot()->sendMessageToAllUsers("Категории товаров были обновлены. Введите /start для отображения изменений.");
         return redirect()->route('typeAdding');
+    }
+
+    public function openMessagesPage()
+    {
+        $messages = ChatMessage::where('got_reply', '=', false)
+            ->join('users', 'users.telegram_chat_id', '=', 'chat_messages.chat_id')
+            ->select('chat_messages.id', 'chat_messages.content', 'users.full_name')
+            ->get();
+        return view('checkMessages', compact('messages'));
+    }
+
+    public function deleteMessage($id)
+    {
+        try {
+            ChatMessage::destroy($id);
+        }
+        catch (\Exception $exception) {
+            die("Произошла ошибка удаления.");
+        }
+    }
+
+    public function replyMessage(Request $request)
+    {
+        $message = ChatMessage::find($request->message_id);
+        ShopServiceFacade::bot()->sendMessageToUserById($request->answer, $message->chat_id);
+        $message->got_reply = true;
+        $message->save();
     }
 }

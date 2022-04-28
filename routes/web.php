@@ -30,3 +30,9 @@ Route::post('/addDevice', [ModerationController::class, "addDevice"]);
 Route::get('/addDeviceType', [ModerationController::class, "openDeviceTypeAdding"])->name("typeAdding");
 
 Route::post('/addDeviceType', [ModerationController::class, "addDeviceType"]);
+
+Route::get('/checkMessages', [ModerationController::class, "openMessagesPage"])->name('check-messages');
+
+Route::delete('/deleteMessage/{id}', [ModerationController::class, "deleteMessage"]);
+
+Route::post('/reply', [ModerationController::class, "replyMessage"]);

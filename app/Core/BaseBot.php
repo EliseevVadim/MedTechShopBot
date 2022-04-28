@@ -208,4 +208,10 @@ abstract class BaseBot extends BotCore
             $this->sendMessage($id->telegram_chat_id, $message);
         }
     }
+
+    public function sendMessageToUserById($message, $id)
+    {
+        $this->sendMessage($id, "Получен ответ от модератора:");
+        $this->sendMessage($id, $message);
+    }
 }
